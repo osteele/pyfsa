@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.3.5: http://docutils.sourceforge.net/" />
+<title></title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<div class="document">
+<div class="section" id="fschartparser">
+<h1><a name="fschartparser">FSChartParser</a></h1>
+<p>ChartParser is a chart parser that uses finite-state automata to
+recognize grammar rules.</p>
+<p>ChartParser is initialized with a grammar, represented as a list of
+rules. Each rule is either a categorizing automaton (defined below),
+or a tuple (lhs, automaton), where each lhs is a category and each
+automaton recognizes a language over terminals, and nonterminals. In
+the latter case, the tuple is compiled to a categorizing automaton.</p>
+<p>A categorizing automaton is an automaton which also maps each final
+state to a list of categories, which index the languages that
+categorize a sequence that leads to that final state. A categorizing
+automaton can be used to simultaneously apply a number of regular
+grammars to a single input sequence, and categorize each subsequence
+according to each grammar. Categorizing automata are represented by
+instances of class CategorizingAutomaton, and created by
+compileCategorizingAutomaton, which takes a list of (lhs, automaton)
+rules and constructs a single categorizing automaton which categorizes
+inputs according to all the rules simultaneously.</p>
+<p>The chart parser operates on instances of Constituent, which has a
+category, a start index, an end index, and a list of children, which
+are also constituents.</p>
+</div>
+<div class="section" id="example">
+<h1><a name="example">Example</a></h1>
+<blockquote>
+<pre class="doctest-block">
+&gt;&gt;&gt; RULES = map(lambda (lhs, rhs):(lhs, FSA.compileRE(rhs, multichar=1)), [
+        ('S', 'NP VP'),
+        ('NP', &quot;det? adj* noun+&quot;),
+        ('NP', 'noun of noun'),
+        ('VP', 'verb NP')])
+&gt;&gt;&gt; parser = ChartParser(compileRules(RULES))
+&gt;&gt;&gt; print parser.parseString('noun verb noun', multichar=1).constituents()
+[S[NP[noun] VP[verb NP[noun]]]]
+&gt;&gt;&gt; print parser.parseString('det adj noun noun verb adj noun', multichar=1).constituents()
+[S[NP[det adj noun noun] VP[verb NP[adj noun]]]]
+&gt;&gt;&gt; parser = ChartParser(compileRules(RULES, optimize=1))
+&gt;&gt;&gt; print parser.parseString('noun verb noun', multichar=1)
+[S[NP[noun] VP[verb NP[noun]]]]
+</pre>
+</blockquote>
+</div>
+</div>
+</body>
+</html>

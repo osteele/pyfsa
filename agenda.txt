@@ -1,0 +1,3 @@
+To do:
+- change Num to use array instead
+- factor out to separate graphviz package

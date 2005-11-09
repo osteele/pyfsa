@@ -1,0 +1,44 @@
+<project default="build">
+  <xmlcatalog id="commonDTDs">
+    <dtd publicId="-//W3C//DTD XHTML 1.0 Transitional//EN"
+         location="c:/laszlo/lps-doc/docs/src/dtds/xhtml1-transitional.dtd"/>
+  </xmlcatalog>
+  
+  <target name="dist">
+    <exec executable="python"
+          dir="..">
+      <arg line="setup.py sdist --format=zip">
+      </arg>
+    </exec>
+  </target>
+  
+  <target name="rst">
+    <apply executable="python"
+           dest="../build">
+      <arg value="../tools/rst2html.py"/>
+      <fileset dir=".." includes="README.txt,LICENSE.txt,FSA.txt,FSChartParser.txt,reCompiler.txt"/>
+      <mapper type="glob" from="*.txt" to="*.html"/>
+      <srcfile/>
+      <targetfile/>
+    </apply>
+    <move file="README.html" tofile="index.html"/>
+  </target>
+  
+  <target name="style">
+    <style style="style.xsl"
+           includes="../build/*.html"
+           destdir="../docs"
+           >
+      <xmlcatalog refid="commonDTDs"/>
+    </style>
+  </target>
+
+  <target name="build" depends="rst,style">
+  </target>
+  
+  <target name="stage">
+    <copy todir="c:/program files/apache group/apache2/htdocs/software/python/fsa">
+      <fileset dir="../docs"/>
+    </copy>
+  </target>
+</project>

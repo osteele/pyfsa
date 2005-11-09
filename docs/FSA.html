@@ -1,0 +1,299 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="generator" content="Docutils 0.3.5: http://docutils.sourceforge.net/"/>
+<title>FSA</title>
+<link rel="stylesheet" href="default.css" type="text/css"/>
+</head>
+<body>
+<div class="document">
+<div class="nav">
+<ul>
+<li>
+<a href="http://osteele.com/software/python/fsa/">Home</a>
+</li>
+<li>
+<a href="http://osteele.com/sources/FSA-1.0.zip">Download</a>
+</li>
+<li>Module Documentation
+        <ul>
+<li>
+<a href="FSA.html">FSA</a>
+</li>
+<li>
+<a href="FSChartParser.html">FSChartParser</a>
+</li>
+<li>
+<a href="reCompiler.html">reCompiler</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="fsa">
+<h1>
+<a name="fsa" shape="rect">FSA</a>
+</h1>
+<p>This module defines an FSA class, for representing and operating on
+finite-state automata (FSAs). FSAs can be used to represent regular
+expressions and to test sequences for membership in the languages
+described by regular expressions.</p>
+<p>FSAs can be deterministic or nondeterministic, and they can contain
+epsilon transitions. Methods to determinize an automaton (also
+eliminating its epsilon transitions), and to minimize an automaton,
+are provided.</p>
+<p>The transition labels for an FSA can be symbols from an alphabet, as
+in the standard formal definition of an FSA, but they can also be
+instances which represent predicates. If these instances implement
+instance.matches(), then the FSA nextState() function and accepts()
+predicate can be used. If they implement instance.complement() and
+instance.intersection(), the FSA can be be determinized and minimized,
+to find a minimal deterministic FSA that accepts an equivalent
+language.</p>
+</div>
+<div class="section" id="quick-start">
+<h2>
+<a name="quick-start" shape="rect">Quick Start</a>
+</h2>
+<p>Instances of FSA can be created out of labels (for instance, strings)
+by the singleton() function, and combined to create more complex FSAs
+through the complement(), closure(), concatenation(), union(), and
+other constructors. For example, concatenation(singleton('a'),
+union(singleton('b'), closure(singleton('c')))) creates an FSA that
+accepts the strings 'a', 'ab', 'ac', 'acc', 'accc', and so on.</p>
+<p>Instances of FSA can also be created with the compileRE() function,
+which compiles a simple regular expression (using only '*', '?', '+',
+'|', '(', and ')' as metacharacters) into an FSA. For example,
+compileRE('a(b|c*)') returns an FSA equivalent to the example in the
+previous paragraph.</p>
+<p>FSAs can be determinized, to create equivalent FSAs (FSAs accepting
+the same language) with unique successor states for each input, and
+minimized, to create an equivalent deterministic FSA with the smallest
+number of states. FSAs can also be complemented, intersected, unioned,
+and so forth as described under 'FSA Functions' below.</p>
+</div>
+<div class="section" id="fsa-methods">
+<h2>
+<a name="fsa-methods" shape="rect">FSA Methods</a>
+</h2>
+<p>The class FSA defines the following methods.</p>
+<div class="section" id="acceptance">
+<h3>
+<a name="acceptance" shape="rect">Acceptance</a>
+</h3>
+<dl>
+<dt>fsa.nextStates(state, input)</dt>
+<dd>returns a list of states</dd>
+<dt>fsa.nextState(state, input)</dt>
+<dd>returns None or a single state if
+nextStates &lt;= 1, otherwise it raises an exception</dd>
+<dt>fsa.nextStateSet(states, input)</dt>
+<dd>returns a list of states</dd>
+<dt>fsa.accepts(sequence)</dt>
+<dd>returns true or false</dd>
+</dl>
+</div>
+<div class="section" id="accessors-and-predicates">
+<h3>
+<a name="accessors-and-predicates" shape="rect">Accessors and predicates</a>
+</h3>
+<dl>
+<dt>isEmpty()</dt>
+<dd>returns true iff the language accepted by the FSA is the empty language</dd>
+<dt>labels()</dt>
+<dd>returns a list of labels that are used in any transition</dd>
+<dt>nextAvailableState()</dt>
+<dd>returns an integer n such that no states in the FSA
+are numeric values &gt;= n</dd>
+</dl>
+</div>
+<div class="section" id="reductions">
+<h3>
+<a name="reductions" shape="rect">Reductions</a>
+</h3>
+<dl>
+<dt>sorted(initial=0)</dt>
+<dd>returns an equivalent FSA whose states are numbered
+upwards from 0</dd>
+<dt>determinized()</dt>
+<dd>returns an equivalent deterministic FSA</dd>
+<dt>minimized()</dt>
+<dd>returns an equivalent minimal FSA</dd>
+<dt>trimmed()</dt>
+<dd>returns an equivalent FSA that contains no unreachable or dead
+states</dd>
+</dl>
+</div>
+<div class="section" id="presentation">
+<h3>
+<a name="presentation" shape="rect">Presentation</a>
+</h3>
+<dl>
+<dt>toDotString()</dt>
+<dd>returns a string suitable as *.dot file for the 'dot'
+program from AT&amp;T GraphViz</dd>
+<dt>view()</dt>
+<dd>views the FSA with a gs viewer, if gs and dot are installed</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="fsa-functions">
+<h2>
+<a name="fsa-functions" shape="rect">FSA Functions</a>
+</h2>
+<div class="section" id="construction-from-fsas">
+<h3>
+<a name="construction-from-fsas" shape="rect">Construction from FSAs</a>
+</h3>
+<dl>
+<dt>complement(a)</dt>
+<dd>returns an fsa that accepts exactly those sequences that its
+argument does not</dd>
+<dt>closure(a)</dt>
+<dd>returns an fsa that accepts sequences composed of zero or more
+concatenations of sequences accepted by the argument</dd>
+<dt>concatenation(a, b)</dt>
+<dd>returns an fsa that accepts sequences composed of a
+sequence accepted by a, followed by a sequence accepted by b</dd>
+<dt>containment(a, occurrences=1)</dt>
+<dd>returns an fsa that accepts sequences that
+contain at least occurrences occurrences of a subsequence recognized by the
+argument.</dd>
+<dt>difference(a, b)</dt>
+<dd>returns an fsa that accepts those sequences accepted by a
+but not b</dd>
+<dt>intersection(a, b)</dt>
+<dd>returns an fsa that accepts sequences accepted by both a
+and b</dd>
+<dt>iteration(a, min=1, max=None)</dt>
+<dd>returns an fsa that accepts sequences
+consisting of from min to max (or any number, if max is None) of sequences
+accepted by its first argument</dd>
+<dt>option(a)</dt>
+<dd>equivalent to union(a, EMPTY_STRING_FSA)</dd>
+<dt>reverse(a)</dt>
+<dd>returns an fsa that accepts strings whose reversal is accepted by
+the argument</dd>
+<dt>union(a, b)</dt>
+<dd>returns an fsa that accepts sequences accepted by both a and b</dd>
+</dl>
+</div>
+<div class="section" id="predicates">
+<h3>
+<a name="predicates" shape="rect">Predicates</a>
+</h3>
+<dl>
+<dt>equivalent(a, b)</dt>
+<dd>returns true iff a and b accept the same language</dd>
+</dl>
+</div>
+<div class="section" id="reductions-these-equivalent-to-the-similarly-named-methods">
+<h3>
+<a name="reductions-these-equivalent-to-the-similarly-named-methods" shape="rect">Reductions (these equivalent to the similarly-named methods)</a>
+</h3>
+<dl>
+<dt>determinize(fsa)</dt>
+<dd>returns an equivalent deterministic FSA</dd>
+<dt>minimize(fsa)</dt>
+<dd>returns an equivalent minimal FSA</dd>
+<dt>sort(fsa, initial=0)</dt>
+<dd>returns an equivalent FSA whose states are numbered from
+initial</dd>
+<dt>trim(fsa)</dt>
+<dd>returns an equivalent FSA that contains no dead or unreachable
+states</dd>
+</dl>
+</div>
+<div class="section" id="construction-from-labels">
+<h3>
+<a name="construction-from-labels" shape="rect">Construction from labels</a>
+</h3>
+<dl>
+<dt>compileRE(string)</dt>
+<dd>returns an FSA that accepts the language described by
+string, where string is a list of symbols and '*', '+', '?', and '|'
+operators, with '(' and ')' to control precedence.</dd>
+<dt>sequence(sequence)</dt>
+<dd>returns an fsa that accepts sequences that are matched by
+the elements of the argument. For example, sequence('abc') returns an fsa that
+accepts 'abc' and ['a', 'b', 'c'].</dd>
+<dt>singleton(label)</dt>
+<dd>returns an fsa that accepts singletons whose elements are
+matched by label. For example, singleton('a') returns an fsa that accepts only
+the string 'a'.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="fsa-constants">
+<h2>
+<a name="fsa-constants" shape="rect">FSA Constants</a>
+</h2>
+<p>EMPTY_STRING_FSA is an FSA that accepts the language consisting only
+of the empty string.</p>
+<p>NULL_FSA is an FSA that accepts the null language.</p>
+<p>UNIVERSAL_FSA is an FSA that accepts S*, where S is any object.</p>
+</div>
+<div class="section" id="fsa-instance-creation">
+<h2>
+<a name="fsa-instance-creation" shape="rect">FSA instance creation</a>
+</h2>
+<p>FSA is initialized with a list of states, an alphabet, a list of
+transition, an initial state, and a list of final states. If fsa is an
+FSA, fsa.tuple() returns these values in that order, i.e. (states,
+alphabet, transitions, initialState, finalStates). They're also
+available as fields of fsa with those names.</p>
+<p>Each element of transition is a tuple of a start state, an end state,
+and a label: (startState, endSTate, label).</p>
+<p>If the list of states is None, it's computed from initialState,
+finalStates, and the states in transitions.</p>
+<p>If alphabet is None, an open alphabet is used: labels are assumed to
+be objects that implements label.matches(input), label.complement(),
+and label.intersection() as follows:</p>
+<blockquote>
+<ul>
+<li>
+<p class="first">label.matches(input) returns true iff label matches input</p>
+</li>
+<li>
+<dl class="first">
+<dt>label.complement() returnseither a label or a list of labels which,</dt>
+<dd>
+<p class="first last">together with the receiver, partition the input alphabet</p>
+</dd>
+</dl>
+</li>
+<li>
+<dl class="first">
+<dt>label.intersection(other) returns either None (if label and other don't</dt>
+<dd>
+<p class="first last">both match any symbol), or a label that matches the set of symbols that
+both label and other match</p>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+<p>As a special case, strings can be used as labels. If a strings 'a' and
+'b' are used as a label and there's no alphabet, '~a' and '~b' are
+their respective complements, and '~a&amp;~b' is the intersection of '~a'
+and '~b'. (The intersections of 'a' and 'b', 'a' and '~b', and '~a'
+and 'b' are, respectively, None, 'a', and 'b'.)</p>
+</div>
+<div class="section" id="goals">
+<h2>
+<a name="goals" shape="rect">Goals</a>
+</h2>
+<p>Design Goals:</p>
+<ul class="simple">
+<li>easy to use</li>
+<li>easy to read (simple implementation, direct expression of algorithms)</li>
+<li>extensible</li>
+</ul>
+<p>Non-Goals:</p>
+<ul class="simple">
+<li>efficiency</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

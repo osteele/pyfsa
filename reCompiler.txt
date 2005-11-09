@@ -1,0 +1,4 @@
+reCompiler
+----------
+
+Compile a regular expression into an FSA.

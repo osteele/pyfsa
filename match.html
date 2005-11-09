@@ -1,0 +1,108 @@
+<HTML><HEAD>
+<STYLE TYPE="text/css" MEDIA="screen" TITLE="Special paragraph colour">
+<!--
+SPAN.rematch {text-decoration: underline;}
+SPAN.rematchnew {color: green; style: bold; text-face: bold; font-style: bold; background: red}
+SPAN.strmatch {text-decoration: underline; background: yellow}
+SPAN.strmatchnew {text-decoration: underline;}
+-->
+</STYLE>
+</HEAD><BODY>
+<H1>'abc' =~ /abc/</H1>
+<TABLE>
+<TR><TD><SPAN CLASS="rematchnew">a</SPAN>bc
+<TD>=~
+<TD><SPAN CLASS="strmatch">a</SPAN><SPAN CLASS="strmatchnew"></SPAN>bc
+<TD>states: [0] -> [1]; positions: [] -> [1]; index = 0
+<TR><TD><SPAN CLASS="rematch">a</SPAN><SPAN CLASS="rematchnew">b</SPAN>c
+<TD>=~
+<TD><SPAN CLASS="strmatch">ab</SPAN><SPAN CLASS="strmatchnew"></SPAN>c
+<TD>states: [1] -> [2]; positions: [1] -> [2]; index = 1
+<TR><TD><SPAN CLASS="rematch">a</SPAN><SPAN CLASS="rematch">b</SPAN><SPAN CLASS="rematchnew">c</SPAN>
+<TD>=~
+<TD><SPAN CLASS="strmatch">abc</SPAN><SPAN CLASS="strmatchnew"></SPAN>
+<TD>states: [2] -> [3]; positions: [1, 2] -> [3]; index = 2
+</TABLE>
+<H1>'ab' !~ /abc/</H1>
+<TABLE>
+<TR><TD><SPAN CLASS="rematchnew">a</SPAN>bc
+<TD>=~
+<TD><SPAN CLASS="strmatch">a</SPAN><SPAN CLASS="strmatchnew"></SPAN>b
+<TD>states: [0] -> [1]; positions: [] -> [1]; index = 0
+<TR><TD><SPAN CLASS="rematch">a</SPAN><SPAN CLASS="rematchnew">b</SPAN>c
+<TD>=~
+<TD><SPAN CLASS="strmatch">ab</SPAN><SPAN CLASS="strmatchnew"></SPAN>
+<TD>states: [1] -> [2]; positions: [1] -> [2]; index = 1
+<TR><TD COLSPAN=2>Failure
+</TABLE>
+<H1>'abc' !~ /ab/</H1>
+<TABLE>
+<TR><TD><SPAN CLASS="rematchnew">a</SPAN>b
+<TD>=~
+<TD><SPAN CLASS="strmatch">a</SPAN><SPAN CLASS="strmatchnew"></SPAN>bc
+<TD>states: [0] -> [1]; positions: [] -> [1]; index = 0
+<TR><TD><SPAN CLASS="rematch">a</SPAN><SPAN CLASS="rematchnew">b</SPAN>
+<TD>=~
+<TD><SPAN CLASS="strmatch">ab</SPAN><SPAN CLASS="strmatchnew"></SPAN>c
+<TD>states: [1] -> [2]; positions: [1] -> [2]; index = 1
+<TR><TD COLSPAN=2>Failure
+</TABLE>
+<H1>'ab' =~ /ab|ac/</H1>
+<TABLE>
+<TR><TD>ab|<SPAN CLASS="rematchnew">a</SPAN>c
+<TD>=~
+<TD><SPAN CLASS="strmatch">a</SPAN><SPAN CLASS="strmatchnew"></SPAN>b
+<TD>states: [0] -> [1]; positions: [] -> [4]; index = 0
+<TR><TD>a<SPAN CLASS="rematchnew">b</SPAN>|<SPAN CLASS="rematch">a</SPAN>c
+<TD>=~
+<TD><SPAN CLASS="strmatch">ab</SPAN><SPAN CLASS="strmatchnew"></SPAN>
+<TD>states: [1] -> [2]; positions: [4] -> [2]; index = 1
+</TABLE>
+<H1>'aaabaabab' =~ /(a*b)*/</H1>
+<TABLE>
+<TR><TD>(<SPAN CLASS="rematchnew">a</SPAN>*b)*
+<TD>=~
+<TD><SPAN CLASS="strmatch">a</SPAN><SPAN CLASS="strmatchnew"></SPAN>aabaabab
+<TD>states: [0] -> [1]; positions: [] -> [2]; index = 0
+<TR><TD>(<SPAN CLASS="rematchnew">a</SPAN>*b)*
+<TD>=~
+<TD><SPAN CLASS="strmatch">aa</SPAN><SPAN CLASS="strmatchnew"></SPAN>abaabab
+<TD>states: [1] -> [1]; positions: [2] -> [2]; index = 1
+<TR><TD>(<SPAN CLASS="rematchnew">a</SPAN>*b)*
+<TD>=~
+<TD><SPAN CLASS="strmatch">aaa</SPAN><SPAN CLASS="strmatchnew"></SPAN>baabab
+<TD>states: [1] -> [1]; positions: [2, 2] -> [2]; index = 2
+<TR><TD>(<SPAN CLASS="rematch">a</SPAN>*<SPAN CLASS="rematchnew">b</SPAN>)*
+<TD>=~
+<TD><SPAN CLASS="strmatch">aaab</SPAN><SPAN CLASS="strmatchnew"></SPAN>aabab
+<TD>states: [1] -> [0]; positions: [2, 2, 2] -> [4]; index = 3
+<TR><TD>(<SPAN CLASS="rematchnew">a</SPAN>*<SPAN CLASS="rematch">b</SPAN>)*
+<TD>=~
+<TD><SPAN CLASS="strmatch">aaaba</SPAN><SPAN CLASS="strmatchnew"></SPAN>abab
+<TD>states: [0] -> [1]; positions: [2, 2, 2, 4] -> [2]; index = 4
+<TR><TD>(<SPAN CLASS="rematchnew">a</SPAN>*<SPAN CLASS="rematch">b</SPAN>)*
+<TD>=~
+<TD><SPAN CLASS="strmatch">aaabaa</SPAN><SPAN CLASS="strmatchnew"></SPAN>bab
+<TD>states: [1] -> [1]; positions: [2, 2, 2, 4, 2] -> [2]; index = 5
+<TR><TD>(<SPAN CLASS="rematch">a</SPAN>*<SPAN CLASS="rematchnew">b</SPAN>)*
+<TD>=~
+<TD><SPAN CLASS="strmatch">aaabaab</SPAN><SPAN CLASS="strmatchnew"></SPAN>ab
+<TD>states: [1] -> [0]; positions: [2, 2, 2, 4, 2, 2] -> [4]; index = 6
+<TR><TD>(<SPAN CLASS="rematchnew">a</SPAN>*<SPAN CLASS="rematch">b</SPAN>)*
+<TD>=~
+<TD><SPAN CLASS="strmatch">aaabaaba</SPAN><SPAN CLASS="strmatchnew"></SPAN>b
+<TD>states: [0] -> [1]; positions: [2, 2, 2, 4, 2, 2, 4] -> [2]; index = 7
+<TR><TD>(<SPAN CLASS="rematch">a</SPAN>*<SPAN CLASS="rematchnew">b</SPAN>)*
+<TD>=~
+<TD><SPAN CLASS="strmatch">aaabaabab</SPAN><SPAN CLASS="strmatchnew"></SPAN>
+<TD>states: [1] -> [0]; positions: [2, 2, 2, 4, 2, 2, 4, 2] -> [4]; index = 8
+</TABLE>
+<H1>'ac' !~ /abc/</H1>
+<TABLE>
+<TR><TD><SPAN CLASS="rematchnew">a</SPAN>bc
+<TD>=~
+<TD><SPAN CLASS="strmatch">a</SPAN><SPAN CLASS="strmatchnew"></SPAN>c
+<TD>states: [0] -> [1]; positions: [] -> [1]; index = 0
+<TR><TD COLSPAN=2>Failure
+</TABLE>
+</BODY></HTML>

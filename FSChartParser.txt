@@ -1,0 +1,42 @@
+FSChartParser
+-------------
+
+ChartParser is a chart parser that uses finite-state automata to
+recognize grammar rules.
+
+ChartParser is initialized with a grammar, represented as a list of
+rules. Each rule is either a categorizing automaton (defined below),
+or a tuple (lhs, automaton), where each lhs is a category and each
+automaton recognizes a language over terminals, and nonterminals. In
+the latter case, the tuple is compiled to a categorizing automaton.
+
+A categorizing automaton is an automaton which also maps each final
+state to a list of categories, which index the languages that
+categorize a sequence that leads to that final state. A categorizing
+automaton can be used to simultaneously apply a number of regular
+grammars to a single input sequence, and categorize each subsequence
+according to each grammar. Categorizing automata are represented by
+instances of class CategorizingAutomaton, and created by
+compileCategorizingAutomaton, which takes a list of (lhs, automaton)
+rules and constructs a single categorizing automaton which categorizes
+inputs according to all the rules simultaneously.
+
+The chart parser operates on instances of Constituent, which has a
+category, a start index, an end index, and a list of children, which
+are also constituents.
+
+Example
+--------
+    >>> RULES = map(lambda (lhs, rhs):(lhs, FSA.compileRE(rhs, multichar=1)), [
+            ('S', 'NP VP'),
+            ('NP', "det? adj* noun+"),
+            ('NP', 'noun of noun'),
+            ('VP', 'verb NP')])
+    >>> parser = ChartParser(compileRules(RULES))
+    >>> print parser.parseString('noun verb noun', multichar=1).constituents()
+    [S[NP[noun] VP[verb NP[noun]]]]
+    >>> print parser.parseString('det adj noun noun verb adj noun', multichar=1).constituents()
+    [S[NP[det adj noun noun] VP[verb NP[adj noun]]]]
+    >>> parser = ChartParser(compileRules(RULES, optimize=1))
+    >>> print parser.parseString('noun verb noun', multichar=1)
+    [S[NP[noun] VP[verb NP[noun]]]]
