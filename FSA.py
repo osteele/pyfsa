@@ -884,7 +884,7 @@ def completion(fsa):
     for state in states:
             labels = map(lambda (_, __, label):label, fsa.transitionsFrom(state))
             for label in complementLabelSet(labels, alphabet):
-                transitions.append(state, sinkState, label)
+                transitions.append((state, sinkState, label))
     if alphabet:
         transitions.extend(map(lambda symbol, s=sinkState:(s, s, symbol), alphabet))
     else:
